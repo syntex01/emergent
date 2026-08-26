@@ -195,7 +195,7 @@ with a fixed window of measure `J < H`, a unit contraction and a prefactor
 `1/H` cannot reproduce a positive unit diagonal using the same coefficient. -/
 theorem single_mode_fixed_window_strict_loss
     {H J energy : ℝ}
-    (hH : 0 < H) (hJ : 0 ≤ J) (hJH : J < H) (henergy : 0 < energy) :
+    (hH : 0 < H) (hJH : J < H) (henergy : 0 < energy) :
     (J / H) * energy < energy := by
   have hratio : J / H < 1 := by
     exact (div_lt_one hH).2 hJH
@@ -204,19 +204,16 @@ theorem single_mode_fixed_window_strict_loss
 /-- Therefore equality with the original positive diagonal energy is impossible. -/
 theorem no_same_coefficient_unit_normalization
     {H J energy : ℝ}
-    (hH : 0 < H) (hJ : 0 ≤ J) (hJH : J < H) (henergy : 0 < energy) :
+    (hH : 0 < H) (hJH : J < H) (henergy : 0 < energy) :
     ¬ energy ≤ (J / H) * energy := by
-  have hlt := single_mode_fixed_window_strict_loss hH hJ hJH henergy
+  have hlt := single_mode_fixed_window_strict_loss hH hJH henergy
   linarith
 
 /-- Rescaling coefficients by `sqrt(H)` restores the missing prefactor but
 multiplies their squared energy by `H`. -/
-lemma normalization_conservation {H energy : ℝ} :
-    H * energy / H = energy ∨ H = 0 := by
-  by_cases h : H = 0
-  · exact Or.inr h
-  · left
-    field_simp
+lemma normalization_conservation {H energy : ℝ} (hH : H ≠ 0) :
+    H * energy / H = energy := by
+  field_simp
 
 #print axioms phi_factor
 #print axioms phi_gap

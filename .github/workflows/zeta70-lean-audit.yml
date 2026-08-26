@@ -1,0 +1,23 @@
+name: Zeta70 Lean audit
+
+on:
+  push:
+    branches:
+      - "audit/zeta70-lean-20260826"
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build, kernel-check, and audit axioms
+        uses: leanprover/lean-action@v1
+        env:
+          LEAN_NUM_THREADS: "1"
+        with:
+          lake-package-directory: zeta70_lean_audit
+          auto-config: false
+          build: true
+          leanchecker: true
+          axiom-audit: true

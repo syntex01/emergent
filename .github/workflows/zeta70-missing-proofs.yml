@@ -1,0 +1,43 @@
+name: Verify Zeta70 missing proofs
+
+on:
+  push:
+    branches:
+      - "audit/zeta70-missing-proofs-20260826"
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lean
+        shell: bash
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve Mathlib and cache
+        working-directory: zeta70_missing_proofs
+        shell: bash
+        run: |
+          lake update
+          lake exe cache get
+      - name: Reject placeholders and local axioms
+        working-directory: zeta70_missing_proofs
+        shell: bash
+        run: |
+          if grep -nE '(^|[[:space:]])(sorry|admit|axiom)([[:space:]]|$)' Zeta70MissingProofs.lean; then
+            echo "Untrusted placeholder or local axiom found."
+            exit 1
+          fi
+      - name: Compile
+        working-directory: zeta70_missing_proofs
+        env:
+          LEAN_NUM_THREADS: "1"
+        run: lake build --wfail
+      - name: Independent kernel replay
+        working-directory: zeta70_missing_proofs
+        env:
+          LEAN_NUM_THREADS: "1"
+        run: lake env leanchecker Zeta70MissingProofs

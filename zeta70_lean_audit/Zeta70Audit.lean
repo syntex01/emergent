@@ -31,10 +31,11 @@ theorem phi_identity_two (σ t : ℝ) :
 theorem phi_nonpositive_of_nonpositive
     {σ t : ℝ} (hσ : σ < (3 : ℝ) / 4) (ht : t ≤ 0) : Phi σ t ≤ 0 := by
   rw [phi_identity_one]
-  have ha : 0 ≤ 8 * (1 - σ) := by positivity
+  have hOne : 0 ≤ 1 - σ := by linarith
+  have ha : 0 ≤ 8 * (1 - σ) := mul_nonneg (by norm_num) hOne
   have hb : 0 ≤ -(2 * (1 - σ) * t) := by
-    have h1 : 0 ≤ 2 * (1 - σ) := by positivity
-    exact neg_nonneg.mpr (mul_nonpos_of_nonneg_of_nonpos h1 ht)
+    apply neg_nonneg.mpr
+    exact mul_nonpos_of_nonneg_of_nonpos (mul_nonneg (by norm_num) hOne) ht
   have hc : 0 ≤ -(t * (t - 2) ^ 2) := by
     exact neg_nonneg.mpr (mul_nonpos_of_nonpos_of_nonneg ht (sq_nonneg (t - 2)))
   have hbracket : 0 ≤ 8 * (1 - σ) - 2 * (1 - σ) * t - t * (t - 2) ^ 2 := by
@@ -71,7 +72,7 @@ theorem hasDerivAt_totalPrimitive (x : ℝ) :
     HasDerivAt totalPrimitive (-x ^ 4 + x ^ 3) x := by
   unfold totalPrimitive
   convert (((hasDerivAt_id x).pow 5).neg.div_const 5).add
-      (((hasDerivAt_id x).pow 4).div_const 4) using 1 <;> ring
+      (((hasDerivAt_id x).pow 4).div_const 4) using 1 <;> simp only [id_eq] <;> ring
 
 /-- Exact evaluation of the single-contraction total mass, equation (4.2). -/
 theorem total_mass_exact : totalPrimitive 1 - totalPrimitive 0 = (1 : ℝ) / 20 := by
@@ -92,10 +93,11 @@ theorem hasDerivAt_hardPrimitive (x : ℝ) :
     HasDerivAt hardPrimitive
       (x ^ 4 - 3 * x ^ 3 + ((11 : ℝ) / 4) * x ^ 2 - ((3 : ℝ) / 4) * x) x := by
   unfold hardPrimitive
-  convert (((hasDerivAt_id x).pow 5).div_const 5).sub
-      (((((hasDerivAt_id x).pow 4).const_mul 3).div_const 4).sub
-        (((((hasDerivAt_id x).pow 3).const_mul 11).div_const 12).sub
-          ((((hasDerivAt_id x).pow 2).const_mul 3).div_const 8))) using 1 <;> ring
+  have h5 := ((hasDerivAt_id x).pow 5).div_const 5
+  have h4 := (((hasDerivAt_id x).pow 4).const_mul 3).div_const 4
+  have h3 := (((hasDerivAt_id x).pow 3).const_mul 11).div_const 12
+  have h2 := (((hasDerivAt_id x).pow 2).const_mul 3).div_const 8
+  convert ((h5.sub h4).add h3).sub h2 using 1 <;> simp only [id_eq] <;> ring
 
 /-- Exact evaluation of the hard wedge, equation (4.3). -/
 theorem hard_mass_exact :
@@ -167,6 +169,10 @@ specific application where `v=1/3`. -/
 theorem lemma_five_one_unqualified_counterexample :
     ¬ ((0 : ℝ) ≥ ((1 - 196) ^ 2) / (1 - 2 * 196 + 38416)) := by
   norm_num
+
+#print axioms hard_mass_exact
+#print axioms final_ratio_exact
+#print axioms lemma_five_one_unqualified_counterexample
 
 end
 

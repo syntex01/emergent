@@ -11,13 +11,38 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build, kernel-check, and audit axioms
-        uses: leanprover/lean-action@v1
+
+      - name: Install Lean toolchain manager
+        shell: bash
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Resolve Mathlib and obtain its binary cache
+        working-directory: zeta70_lean_audit
+        shell: bash
+        run: |
+          lake update
+          lake exe cache get
+
+      - name: Reject placeholders and local axioms
+        working-directory: zeta70_lean_audit
+        shell: bash
+        run: |
+          if grep -nE '(^|[[:space:]])(sorry|admit|axiom)([[:space:]]|$)' Zeta70Audit.lean; then
+            echo "Untrusted proof placeholder or local axiom found."
+            exit 1
+          fi
+
+      - name: Compile the formal audit
+        working-directory: zeta70_lean_audit
         env:
           LEAN_NUM_THREADS: "1"
-        with:
-          lake-package-directory: zeta70_lean_audit
-          auto-config: false
-          build: true
-          leanchecker: true
-          axiom-audit: true
+        run: lake build --wfail
+
+      - name: Independent Lean kernel check
+        working-directory: zeta70_lean_audit
+        env:
+          LEAN_NUM_THREADS: "1"
+        run: lake env leanchecker Zeta70Audit

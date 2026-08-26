@@ -67,13 +67,6 @@ theorem total_mass_inner_reduction (x : ℝ) :
 /-- A primitive of the total-mass polynomial. -/
 def totalPrimitive (x : ℝ) : ℝ := -x ^ 5 / 5 + x ^ 4 / 4
 
-/-- The primitive differentiates to the reduced total-mass density. -/
-theorem hasDerivAt_totalPrimitive (x : ℝ) :
-    HasDerivAt totalPrimitive (-x ^ 4 + x ^ 3) x := by
-  unfold totalPrimitive
-  convert (((hasDerivAt_id x).pow 5).neg.div_const 5).add
-      (((hasDerivAt_id x).pow 4).div_const 4) using 1 <;> simp only [id_eq] <;> ring
-
 /-- Exact evaluation of the single-contraction total mass, equation (4.2). -/
 theorem total_mass_exact : totalPrimitive 1 - totalPrimitive 0 = (1 : ℝ) / 20 := by
   norm_num [totalPrimitive]
@@ -87,17 +80,6 @@ theorem hard_mass_inner_reduction (x : ℝ) :
 /-- A primitive of the hard-wedge polynomial. -/
 def hardPrimitive (x : ℝ) : ℝ :=
   x ^ 5 / 5 - 3 * x ^ 4 / 4 + 11 * x ^ 3 / 12 - 3 * x ^ 2 / 8
-
-/-- The primitive differentiates to the reduced hard-wedge density. -/
-theorem hasDerivAt_hardPrimitive (x : ℝ) :
-    HasDerivAt hardPrimitive
-      (x ^ 4 - 3 * x ^ 3 + ((11 : ℝ) / 4) * x ^ 2 - ((3 : ℝ) / 4) * x) x := by
-  unfold hardPrimitive
-  have h5 := ((hasDerivAt_id x).pow 5).div_const 5
-  have h4 := (((hasDerivAt_id x).pow 4).const_mul 3).div_const 4
-  have h3 := (((hasDerivAt_id x).pow 3).const_mul 11).div_const 12
-  have h2 := (((hasDerivAt_id x).pow 2).const_mul 3).div_const 8
-  convert ((h5.sub h4).add h3).sub h2 using 1 <;> simp only [id_eq] <;> ring
 
 /-- Exact evaluation of the hard wedge, equation (4.3). -/
 theorem hard_mass_exact :

@@ -70,8 +70,13 @@ theorem optimized_trimmed_identity
           (cOpt Δ) ^ 2
       =
     20 / (27 + 90 * Δ) := by
-  dsimp [sigmaOpt, cOpt] at hc ⊢
-  field_simp [hc, hden]
+  have hlin : 9 + 30 * Δ ≠ 0 := by
+    intro h
+    apply hden
+    nlinarith
+  rw [cOpt_eq]
+  unfold sigmaOpt
+  field_simp [hlin, hden]
   ring
 
 /-- Exact threshold for a strict seventy-percent conclusion. -/

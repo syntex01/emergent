@@ -23,7 +23,8 @@ theorem trimmed_detector_rearrangement
   have hc2 : 0 < c ^ 2 := sq_pos_of_pos hc
   have hdiv :
       n - s ≤ (n * A + 4 * c * (loss + n * τ)) / c ^ 2 := by
-    exact (le_div_iff₀ hc2).2 master
+    apply (le_div_iff₀ hc2).2
+    simpa [mul_comm] using master
   have hs :
       n - (n * A + 4 * c * (loss + n * τ)) / c ^ 2 ≤ s := by
     linarith
@@ -69,7 +70,7 @@ theorem optimized_trimmed_identity
           (cOpt Δ) ^ 2
       =
     20 / (27 + 90 * Δ) := by
-  unfold sigmaOpt cOpt at *
+  dsimp [sigmaOpt, cOpt] at hc ⊢
   field_simp [hc, hden]
   ring
 

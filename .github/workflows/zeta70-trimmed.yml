@@ -1,0 +1,40 @@
+name: Zeta70 trimmed Lean check
+
+on:
+  push:
+    branches:
+      - "audit/zeta70-trimmed-20260905"
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lean
+        shell: bash
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve Mathlib
+        working-directory: zeta70_trimmed
+        run: |
+          lake update
+          lake exe cache get
+      - name: Reject placeholders
+        working-directory: zeta70_trimmed
+        run: |
+          if grep -nE '(^|[[:space:]])(sorry|admit|axiom)([[:space:]]|$)' Zeta70Trimmed.lean; then
+            exit 1
+          fi
+      - name: Build
+        working-directory: zeta70_trimmed
+        env:
+          LEAN_NUM_THREADS: "1"
+        run: lake build --wfail
+      - name: Kernel replay
+        working-directory: zeta70_trimmed
+        env:
+          LEAN_NUM_THREADS: "1"
+        run: lake env leanchecker Zeta70Trimmed

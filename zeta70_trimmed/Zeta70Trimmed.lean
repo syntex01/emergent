@@ -6,35 +6,47 @@ noncomputable section
 
 /-!
 This file kernel-checks the exact scalar algebra behind a rank-trimmed
-quartic detector.  It does not postulate the remaining analytic theorem.
+quartic detector. It deliberately does not postulate the remaining analytic theorem.
 -/
 
 /--
-Pure scalar rearrangement behind the rank-trimmed detector theorem.
+Pure scalar rearrangement behind an arbitrary-projection detector bound.
 
-`master` is `c² (n - s) ≤ n A + 4 c (r + n τ)`.
+`master` is `c² (n - s) ≤ n A + 4 c (loss + n τ)`.
 -/
 theorem trimmed_detector_rearrangement
-    {N n r s c A τ : ℝ}
+    {N n loss s c A τ : ℝ}
     (hN : 0 < N)
     (hc : 0 < c)
-    (master : c ^ 2 * (n - s) ≤ n * A + 4 * c * (r + n * τ)) :
-    n / N * (1 - A / c ^ 2 - 4 * τ / c) - 4 * r / (c * N) ≤ s / N := by
+    (master : c ^ 2 * (n - s) ≤ n * A + 4 * c * (loss + n * τ)) :
+    n / N * (1 - A / c ^ 2 - 4 * τ / c) - 4 * loss / (c * N) ≤ s / N := by
   have hc2 : 0 < c ^ 2 := sq_pos_of_pos hc
   have hdiv :
-      n - s ≤ (n * A + 4 * c * (r + n * τ)) / c ^ 2 := by
+      n - s ≤ (n * A + 4 * c * (loss + n * τ)) / c ^ 2 := by
     exact (le_div_iff₀ hc2).2 master
   have hs :
-      n - (n * A + 4 * c * (r + n * τ)) / c ^ 2 ≤ s := by
+      n - (n * A + 4 * c * (loss + n * τ)) / c ^ 2 ≤ s := by
     linarith
   have hid :
-      n / N * (1 - A / c ^ 2 - 4 * τ / c) - 4 * r / (c * N)
+      n / N * (1 - A / c ^ 2 - 4 * τ / c) - 4 * loss / (c * N)
         =
-      (n - (n * A + 4 * c * (r + n * τ)) / c ^ 2) / N := by
+      (n - (n * A + 4 * c * (loss + n * τ)) / c ^ 2) / N := by
     field_simp [ne_of_gt hN, ne_of_gt hc]
     ring
   rw [hid]
   exact (div_le_div_iff_of_pos_right hN).2 hs
+
+/--
+The complete-pair version: `bandLoss` is the bandwidth deficit `N-d`.
+The deleted-pair rank does not appear in the final scalar bound.
+-/
+theorem complete_pair_trimmed_rearrangement
+    {N n bandLoss s c A τ : ℝ}
+    (hN : 0 < N)
+    (hc : 0 < c)
+    (master : c ^ 2 * (n - s) ≤ n * A + 4 * c * (bandLoss + n * τ)) :
+    n / N * (1 - A / c ^ 2 - 4 * τ / c) - 4 * bandLoss / (c * N) ≤ s / N :=
+  trimmed_detector_rearrangement hN hc master
 
 /-- Optimizing parameter for variance `1/3` and fourth moment `4/15 + 2Δ`. -/
 def sigmaOpt (Δ : ℝ) : ℝ := 1 / 10 - 3 * Δ
@@ -129,6 +141,7 @@ theorem witness_delta :
   norm_num
 
 #print axioms trimmed_detector_rearrangement
+#print axioms complete_pair_trimmed_rearrangement
 #print axioms optimized_trimmed_identity
 #print axioms optimized_trimmed_exceeds_seventy
 #print axioms witness_centered_fourth

@@ -1,0 +1,48 @@
+name: Zeta70 barrier audit
+
+on:
+  push:
+    branches:
+      - "audit/zeta70-barrier-20260906"
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Lean toolchain manager
+        shell: bash
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Resolve Mathlib and obtain binary cache
+        working-directory: zeta70_barrier
+        shell: bash
+        run: |
+          lake update
+          lake exe cache get
+
+      - name: Reject placeholders and local axioms
+        working-directory: zeta70_barrier
+        shell: bash
+        run: |
+          if grep -nE '(^|[[:space:]])(sorry|admit|axiom)([[:space:]]|$)' Zeta70Barrier.lean; then
+            echo "Untrusted proof placeholder or local axiom found."
+            exit 1
+          fi
+
+      - name: Compile formal barrier audit
+        working-directory: zeta70_barrier
+        env:
+          LEAN_NUM_THREADS: "1"
+        run: lake build --wfail
+
+      - name: Independent Lean kernel replay
+        working-directory: zeta70_barrier
+        env:
+          LEAN_NUM_THREADS: "1"
+        run: lake env leanchecker Zeta70Barrier

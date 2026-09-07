@@ -1,12 +1,19 @@
 name = "zeta70missingproofs"
 version = "0.2.0"
-defaultTargets = ["Zeta70MissingProofs", "Zeta70FormalBoundary"]
+defaultTargets = [
+  "Zeta70MissingProofs",
+  "Zeta70FormalBoundary",
+  "Zeta70WeightedDispersion"
+]
 
 [[lean_lib]]
 name = "Zeta70MissingProofs"
 
 [[lean_lib]]
 name = "Zeta70FormalBoundary"
+
+[[lean_lib]]
+name = "Zeta70WeightedDispersion"
 
 [[require]]
 name = "mathlib"

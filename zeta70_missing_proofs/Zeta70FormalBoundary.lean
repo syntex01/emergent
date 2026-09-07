@@ -34,8 +34,10 @@ theorem weighted_cauchy_schwarz_sq
     apply Finset.sum_congr rfl
     intro i hi
     dsimp [f, g]
-    rw [← mul_assoc, Real.mul_self_sqrt (hw i hi)]
-    ring
+    calc
+      Real.sqrt (w i) * x i * (Real.sqrt (w i) * y i)
+          = (Real.sqrt (w i) * Real.sqrt (w i)) * x i * y i := by ring
+      _ = w i * x i * y i := by rw [Real.mul_self_sqrt (hw i hi)]
   have hff : (∑ i ∈ s, f i ^ 2) = ∑ i ∈ s, w i * x i ^ 2 := by
     apply Finset.sum_congr rfl
     intro i hi
@@ -46,7 +48,8 @@ theorem weighted_cauchy_schwarz_sq
     intro i hi
     dsimp [g]
     rw [mul_pow, Real.sq_sqrt (hw i hi)]
-  simpa [hfg, hff, hgg] using hcs
+  rw [hfg, hff, hgg] at hcs
+  exact hcs
 
 /-- Abstract transfer lemma: once the two globally aggregated square sums have
 bounds `A` and `B`, the cross term has the exact geometric-mean bound. -/
@@ -56,7 +59,7 @@ theorem aggregate_cross_term_sq_le
     (hw : ∀ i ∈ s, 0 ≤ w i)
     (hA : (∑ i ∈ s, w i * x i ^ 2) ≤ A)
     (hB : (∑ i ∈ s, w i * y i ^ 2) ≤ B)
-    (hA0 : 0 ≤ A) (hB0 : 0 ≤ B) :
+    (hA0 : 0 ≤ A) :
     (∑ i ∈ s, w i * x i * y i) ^ 2 ≤ A * B := by
   calc
     (∑ i ∈ s, w i * x i * y i) ^ 2
@@ -105,15 +108,11 @@ theorem certificate_implies_seventy_percent
   let η : ℝ := min (ε / 2)
     ((Zeta70MissingProofs.simpleZeroBound C.delta - 7 / 10) / 2)
   have hη : 0 < η := by
-    apply lt_min
-    · linarith
-    · dsimp [η]
-      linarith
+    exact lt_min (by linarith) (by linarith)
+  have hηε : η ≤ ε / 2 := min_le_left _ _
   have hcoeff :
       (7 / 10 : ℝ) - ε ≤
         Zeta70MissingProofs.simpleZeroBound C.delta - η := by
-    dsimp [η]
-    have hηε : η ≤ ε / 2 := min_le_left _ _
     linarith
   filter_upwards [C.detector_output η hη, C.denominator_nonneg] with n hn hden
   exact (mul_le_mul_of_nonneg_right hcoeff hden).trans hn

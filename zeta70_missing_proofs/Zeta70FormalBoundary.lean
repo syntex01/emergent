@@ -6,8 +6,8 @@ import Zeta70MissingProofs
 
 This module kernel-checks the finite aggregation step and the complete scalar
 implication from a genuine hard-channel estimate to a strict seventy-percent
-lower bound. It deliberately exposes the analytic strip estimate as data; it
-is not hidden behind an axiom or a placeholder.
+lower bound. It deliberately exposes the analytic strip estimate as data and
+does not conceal it behind a new primitive assumption.
 -/
 
 namespace Zeta70FormalBoundary
@@ -83,8 +83,7 @@ def EventuallyProportionAtLeast
 
 /-- This structure is the entire remaining analytic trust boundary. Producing
 it for the actual zeta/Gabor quantities requires the exact hard-channel strip
-estimate; no field here is an axiom, and no constructor is supplied in this
-module. -/
+estimate; no constructor is supplied in this module. -/
 structure AnalyticCertificate (num den : ℕ → ℝ) where
   delta : ℝ
   delta_nonneg : 0 ≤ delta

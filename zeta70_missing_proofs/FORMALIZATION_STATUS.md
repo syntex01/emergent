@@ -24,6 +24,8 @@ The finite-dimensional detector is formalized and kernel-checked. The missing pa
 
 `Zeta70FormalBoundary.lean` additionally formalizes weighted finite Cauchy--Schwarz after the complete modulus family has been aggregated, the abstract geometric-mean transfer for two globally weighted square sums, exact cancellation of the reciprocal scale ratios, and the filter-level implication from a genuine analytic certificate below `11/630` to an eventual 70% lower bound.
 
+`Zeta70Statement.lean` defines nontrivial zeta zeros, multiplicity, `Ncount`, and `N0simple` directly from Mathlib's `riemannZeta` and `analyticOrderAt`. It states the literal dyadic-height strict-70% theorem and kernel-checks that an analytic certificate below `11/630` implies that exact statement.
+
 `Zeta70WeightedDispersion.lean` formalizes a finite counterexample showing that a nonconstant determinant/output window survives the dispersion swap. Two translated inputs have identical autocorrelation vectors, hence every expression depending only on the autocorrelation shift gives the same value, but their determinant-windowed energies are different. Therefore the exact Gabor weight cannot be silently replaced by a multiplier depending only on the shift `k`.
 
 The new files intentionally supply no constructor for the analytic certificate.

@@ -23,15 +23,15 @@ jobs:
         run: |
           lake update
           lake exe cache get
-      - name: Reject placeholders and local axioms
+      - name: Reject untrusted proof escapes
         working-directory: zeta70_missing_proofs
         shell: bash
         run: |
-          if grep -nE '(^|[[:space:]])(sorry|admit|axiom)([[:space:]]|$)' \
+          if grep -nE '(^|[[:space:]])(sorry|admit|axiom)([[:space:]]|$)|native_decide' \
             Zeta70MissingProofs.lean \
             Zeta70FormalBoundary.lean \
             Zeta70WeightedDispersion.lean; then
-            echo "Untrusted placeholder or local axiom found."
+            echo "Untrusted proof escape found."
             exit 1
           fi
       - name: Compile

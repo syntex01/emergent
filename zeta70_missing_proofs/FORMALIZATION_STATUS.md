@@ -4,7 +4,7 @@
 
 An unconditional Lean theorem proving that at least 70% of the nontrivial zeros of the Riemann zeta function are simple and lie on the critical line is not currently justified by the supplied proof chain.
 
-The finite-dimensional detector is formalized and kernel-checked. The missing part is still analytic: one must prove the exact cutoff-preserving balanced Gabor determinant estimate and connect it to the formal zeta-zero objects. Introducing that statement as an `axiom`, a structure field, or a theorem with an unproved premise would produce only a conditional theorem.
+The finite-dimensional detector is formalized and kernel-checked. The missing part is still analytic: one must prove the exact cutoff-preserving balanced Gabor determinant estimate and connect it to the formal zeta-zero objects. Introducing that statement as an axiom, a structure field, or a theorem with an unproved premise would produce only a conditional theorem.
 
 ## Kernel-checked layer
 
@@ -24,7 +24,9 @@ The finite-dimensional detector is formalized and kernel-checked. The missing pa
 
 `Zeta70FormalBoundary.lean` additionally formalizes weighted finite Cauchy--Schwarz after the complete modulus family has been aggregated, the abstract geometric-mean transfer for two globally weighted square sums, exact cancellation of the reciprocal scale ratios, and the filter-level implication from a genuine analytic certificate below `11/630` to an eventual 70% lower bound.
 
-The new file intentionally supplies no constructor for the analytic certificate.
+`Zeta70WeightedDispersion.lean` formalizes a finite counterexample showing that a nonconstant determinant/output window survives the dispersion swap. Two translated inputs have identical autocorrelation vectors, hence every expression depending only on the autocorrelation shift gives the same value, but their determinant-windowed energies are different. Therefore the exact Gabor weight cannot be silently replaced by a multiplier depending only on the shift `k`.
+
+The new files intentionally supply no constructor for the analytic certificate.
 
 ## Exact remaining analytic certificate
 
@@ -79,9 +81,20 @@ with natural area `D^2/T` and arithmetic core
 
 The proposed full-shift prime-pair variance theorem is a plausible classical circle-method target. The weighted multiplicity calculation is also a valid abstract mechanism. They do not yet constitute a proof of the exact Gabor strip estimate.
 
-The argument applies the full-shift variance theorem to ordinary correlations of `Lambda`. The exact residual coefficient in the Gabor word is instead `(Lambda_theta * mu_eta)(d) ell_eta(m)`, and the balanced residual is the Möbius two-linear-form strip displayed above. A theorem identifying the full cutoff-preserving, path-weighted, cross-dyadic determinant form with the specific product of ordinary prime-pair errors used by the multiplicity argument has not been derived. The earlier verified bridge/glue theorem only covers blocks that already reduce to two von-Mangoldt correlations with logarithmic dilation parameters; it explicitly leaves the polynomially balanced strip untreated.
+The exact weighted dispersion identity has the schematic form
 
-Therefore the line “the `k != 0` part is exactly of the form in Theorem B” is presently an unproved analytic identification, not a definitional rewrite. Formalization stops precisely there.
+\[
+\sum_j W(j/H)|A_j|^2
+ =\sum_k\sum_{m,n}
+ W((b_1n-b_2m)/H)
+ u_m\overline{u_{m-rk}}v_n\overline{v_{n-qk}}.
+\]
+
+The determinant weight remains coupled to the base variables `m,n`. Only when `W` is constant does the right-hand side factor into a product of two ordinary autocorrelations. Fourier-separating `W` produces additive phases of scaled frequency approximately `D b/H`, which is of conductor size `T`, not a smooth weight of polylogarithmic Sobolev complexity. Thus the full-shift variance theorem for ordinary `Lambda` correlations cannot be inserted at this point without a new oscillatory, determinant-locked version.
+
+Independently, the exact residual coefficient in the Gabor word is `(Lambda_theta * mu_eta)(d) ell_eta(m)`, and the balanced residual is the Möbius two-linear-form strip displayed above. The earlier verified bridge/glue theorem covers only blocks already reducible to two von-Mangoldt correlations with logarithmic dilation parameters; it explicitly leaves the polynomially balanced strip untreated.
+
+Therefore the line “the `k != 0` part is exactly of the form in Theorem B” is false as a general weighted identity. Formalization exposes the missing determinant-window dependence rather than closing it.
 
 A second independent obligation is the exact centered major-arc sign after all Mellin twists, path amplitudes, orientations, and cross-dyadic blocks are recombined. A scalar singular-series sign is not enough unless the required Gram factorization is proved for the actual channel.
 
@@ -90,7 +103,7 @@ A second independent obligation is the exact centered major-arc sign after all M
 ```text
 Existing explicit-formula / zero-side formalization
 + exact cutoff-preserving trace identification
-+ balanced strip estimate at natural D^2/T normalization
++ determinant-windowed balanced strip estimate at natural D^2/T normalization
 + exact centered major-arc sign
 ------------------------------------------------------
 analytic certificate Delta < 11/630

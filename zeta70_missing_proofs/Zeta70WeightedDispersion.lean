@@ -56,11 +56,12 @@ theorem shiftOnlyForm_translation_invariant (omega : ℤ → ℤ) :
 /-- The actual weighted fiber energy is not invariant under that translation. -/
 theorem weightedEnergy_left :
     weightedEnergy leftPoint leftPoint = 1 := by
-  native_decide
+  norm_num [weightedEnergy, shifts, centralWindow, fiberAmplitude, leftPoint, idx]
 
 theorem weightedEnergy_right :
     weightedEnergy rightPoint leftPoint = 0 := by
-  native_decide
+  norm_num [weightedEnergy, shifts, centralWindow, fiberAmplitude,
+    leftPoint, rightPoint, idx]
 
 /-- No multiplier depending only on the correlation shift can represent both
 weighted determinant energies. Thus the determinant window may not be dropped

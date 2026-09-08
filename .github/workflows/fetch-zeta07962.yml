@@ -1,0 +1,24 @@
+name: Fetch zeta07962 source
+
+on:
+  push:
+    branches:
+      - "audit/zeta70-formal-boundary-20260907"
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: JoshuaHKU/zeta-0.7947-reproduction
+          path: zeta07962
+      - name: Archive external source
+        run: tar -czf zeta07962-source.tar.gz zeta07962
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zeta07962-source
+          path: zeta07962-source.tar.gz
+          retention-days: 1

@@ -4,7 +4,8 @@ defaultTargets = [
   "Zeta70MissingProofs",
   "Zeta70FormalBoundary",
   "Zeta70WeightedDispersion",
-  "Zeta70Statement"
+  "Zeta70Statement",
+  "Zeta70TwoScaleBarrier"
 ]
 
 [[lean_lib]]
@@ -18,6 +19,9 @@ name = "Zeta70WeightedDispersion"
 
 [[lean_lib]]
 name = "Zeta70Statement"
+
+[[lean_lib]]
+name = "Zeta70TwoScaleBarrier"
 
 [[require]]
 name = "mathlib"

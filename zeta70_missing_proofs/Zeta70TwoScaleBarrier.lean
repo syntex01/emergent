@@ -4,7 +4,7 @@ import Mathlib
 # The two-scale detector and the quadratic-information barrier
 
 This file formalizes the exact scalar obstruction exposed by the bounded
-completed-zeta scattering detector.  It does not assume or state a new zeta
+completed-zeta scattering detector. It does not assume or state a new zeta
 zero theorem.
 -/
 
@@ -24,7 +24,11 @@ theorem detector_target_implies_simple_proportion
   have h : q * δ * N < δ * S := htarget.trans_le hupper
   have h' : δ * (q * N) < δ * S := by
     simpa [mul_assoc, mul_left_comm, mul_comm] using h
-  exact (mul_lt_mul_left hδ).mp h'
+  by_contra hnot
+  have hrev : S ≤ q * N := le_of_not_gt hnot
+  have hmul : δ * S ≤ δ * (q * N) :=
+    mul_le_mul_of_nonneg_left hrev hδ.le
+  exact (not_lt_of_ge hmul) h'
 
 /-- Any lower bound for a simple-zero detector obtained only from a first
 multiplicity moment and a quadratic collision moment has the ceiling `2-C`.
@@ -34,7 +38,6 @@ one and two on a quadratic minorant `α*m - γ*m^2`; a valid simple-zero detecto
 has value at most `δ` at `m=1` and at most zero at `m=2`. -/
 theorem quadratic_information_ceiling
     {δ C α γ : ℝ}
-    (hδ : 0 ≤ δ)
     (hC1 : 1 ≤ C)
     (hC2 : C ≤ 2)
     (h1 : α - γ ≤ δ)
@@ -62,16 +65,15 @@ theorem quadratic_information_cannot_reach_seventy
     (h1 : α - γ ≤ δ)
     (h2 : 2 * α - 4 * γ ≤ 0) :
     α - C * γ < (7 / 10 : ℝ) * δ := by
-  have hbase := quadratic_information_ceiling hδ.le hC1 hC2 h1 h2
+  have hbase := quadratic_information_ceiling hC1 hC2 h1 h2
   have hcoef : 2 - C < (7 / 10 : ℝ) := by linarith
   exact hbase.trans_lt (mul_lt_mul_of_pos_right hcoef hδ)
 
 /-- For the explicit scale `κ = 3 - 2*sqrt 2`, the two-scale detector has
-`c₁ = δ` and `c₂ = -(2/3)δ`.  These stronger two-point constraints force the
+`c₁ = δ` and `c₂ = -(2/3)δ`. These stronger two-point constraints force the
 smaller exact ceiling `(7-4C)/3`. -/
 theorem explicit_two_scale_quadratic_ceiling
     {δ C α γ : ℝ}
-    (hδ : 0 ≤ δ)
     (hC1 : 1 ≤ C)
     (hC2 : C ≤ 2)
     (h1 : α - γ ≤ δ)

@@ -1,0 +1,24 @@
+name: Fetch Ainta zeta source
+
+on:
+  push:
+    branches:
+      - "audit/zeta70-formal-boundary-20260907"
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: ainta/zeta-simple-zeros
+          path: ainta-zeta
+      - name: Archive external source
+        run: tar -czf ainta-zeta-source.tar.gz ainta-zeta
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ainta-zeta-source
+          path: ainta-zeta-source.tar.gz
+          retention-days: 1

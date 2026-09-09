@@ -5,7 +5,7 @@ import Zeta70MissingProofs
 # Exact hybrid closure for the Zeta70 determinant programme
 
 This module checks the complete rational implication from the two remaining
-analytic estimates to a strict 70% lower bound.  It deliberately does not
+analytic estimates to a strict 70% lower bound. It deliberately does not
 postulate those estimates as axioms.
 -/
 
@@ -58,13 +58,12 @@ theorem analytic_delta_le_hybrid_gives_gt_seventy
   exact lt_of_le_of_lt hle hybridExcess_below_budget
 
 /-- Finite Hilbert-space form of the vector-valued upper-sieve transfer.
-Once each exact fibre operator is positive and bounded by `4 I`, all Gabor,
-Mellin, orientation, and cross-dyadic labels may remain inside the Hilbert
-coordinate without increasing the constant. -/
+Once each exact fibre operator is bounded by `4 I`, all Gabor, Mellin,
+orientation, and cross-dyadic labels may remain inside the Hilbert coordinate
+without increasing the constant. -/
 theorem finite_vector_sieve_four
     {ι : Type*} [Fintype ι]
     (main total : ι → ℝ)
-    (hmain : ∀ i, 0 ≤ main i)
     (hfibre : ∀ i, total i ≤ 4 * main i) :
     (∑ i, total i) ≤ 4 * ∑ i, main i := by
   calc

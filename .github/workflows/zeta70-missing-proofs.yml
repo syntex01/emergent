@@ -32,7 +32,8 @@ jobs:
             Zeta70FormalBoundary.lean \
             Zeta70WeightedDispersion.lean \
             Zeta70Statement.lean \
-            Zeta70TwoScaleBarrier.lean; then
+            Zeta70TwoScaleBarrier.lean \
+            Zeta70HybridClosure.lean; then
             echo "Untrusted proof escape found."
             exit 1
           fi
@@ -51,3 +52,4 @@ jobs:
           lake env leanchecker Zeta70WeightedDispersion
           lake env leanchecker Zeta70Statement
           lake env leanchecker Zeta70TwoScaleBarrier
+          lake env leanchecker Zeta70HybridClosure

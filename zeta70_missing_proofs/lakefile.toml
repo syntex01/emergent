@@ -6,7 +6,8 @@ defaultTargets = [
   "Zeta70WeightedDispersion",
   "Zeta70Statement",
   "Zeta70TwoScaleBarrier",
-  "Zeta70HybridClosure"
+  "Zeta70HybridClosure",
+  "Zeta70SL2NormalForm"
 ]
 
 [[lean_lib]]
@@ -26,6 +27,9 @@ name = "Zeta70TwoScaleBarrier"
 
 [[lean_lib]]
 name = "Zeta70HybridClosure"
+
+[[lean_lib]]
+name = "Zeta70SL2NormalForm"
 
 [[require]]
 name = "mathlib"
